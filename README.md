@@ -1,18 +1,30 @@
-# Portfolio — Sunil Kumar Elumalai
+# Sunil Kumar — Personal Portfolio
 
-A personal developer portfolio deployed on **AWS EC2** with **Nginx**, provisioned via **Terraform**, and continuously delivered through **GitHub Actions**.
+A modern, component-based personal portfolio for **Sunil Kumar**, a Python Developer & DevOps Engineer. Built with **Vite** and **Vanilla JavaScript**, and automatically deployed to **GitHub Pages** via **GitHub Actions**.
+
+🌐 **Live site:** [sunil2409.github.io/sunil-kumar-portfolio](https://sunil2409.github.io/sunil-kumar-portfolio)
+
+---
+
+## ✨ Features
+
+- ⚡ **Vite-powered** — lightning-fast dev server and optimized production builds
+- 🧩 **Component-based architecture** — modular JS components for each section
+- 🎨 **Animated UI** — floating cyber-particles canvas, mouse-reactive spotlight glow, live CLI background animation
+- 📱 **Fully responsive** — mobile-first design with a hamburger nav
+- 🚀 **Auto-deployed** — every push to `main` triggers a GitHub Actions build and deploy to GitHub Pages
 
 ---
 
 ## 🛠 Tech Stack
 
-| Layer          | Technology                          |
-|----------------|-------------------------------------|
-| Frontend       | HTML, CSS (vanilla)                 |
-| Web Server     | Nginx on Amazon Linux 2023          |
-| Infrastructure | Terraform (AWS EC2, IAM, SG)        |
-| CI/CD          | GitHub Actions → SSH deploy to EC2  |
-| Cloud          | AWS (EC2, IAM)                      |
+| Layer      | Technology                          |
+|------------|-------------------------------------|
+| Frontend   | Vanilla JavaScript (ES Modules)     |
+| Styling    | Vanilla CSS                         |
+| Fonts      | Space Grotesk · Sora · JetBrains Mono (Google Fonts) |
+| Bundler    | Vite 7                              |
+| CI/CD      | GitHub Actions → GitHub Pages       |
 
 ---
 
@@ -20,60 +32,76 @@ A personal developer portfolio deployed on **AWS EC2** with **Nginx**, provision
 
 ```
 .
-├── .github/workflows/
-│   └── deploy.yml            # CI/CD — auto-deploys on push to main
-├── infra/
-│   ├── ec2/
-│   │   └── main.tf           # EC2 instance, security group, Nginx setup
-│   └── iam/
-│       └── main.tf           # IAM user and access key provisioning
+├── .github/
+│   └── workflows/
+│       └── deploy.yml        # CI/CD — builds and deploys to GitHub Pages on push to main
+├── public/
+│   ├── Assets/               # Images (profile photo, project screenshots, etc.)
+│   └── Font/                 # Local font files
 ├── src/
-│   └── index.html            # Portfolio website
+│   ├── components/
+│   │   ├── App.js            # Root component — assembles all sections
+│   │   ├── Hero.js           # Hero / landing section
+│   │   ├── About.js          # About me section
+│   │   ├── Skills.js         # Skills & tools section
+│   │   ├── Experience.js     # Work experience timeline
+│   │   ├── Projects.js       # Featured projects
+│   │   ├── Journey.js        # Learning journey / milestones
+│   │   ├── Credentials.js    # Certifications & credentials
+│   │   ├── Contact.js        # Contact section
+│   │   ├── Header.js         # Navigation header
+│   │   └── utils.js          # Shared utility functions
+│   ├── main.js               # Entry point — mounts app, canvas animations, CLI BG
+│   └── styles.css            # Global styles & design tokens
+├── index.html                # HTML shell
+├── package.json
 ├── .gitignore
-├── LICENSE
-└── README.md
+└── LICENSE
 ```
 
 ---
 
-## 🚀 How It Works
-
-1. **Infrastructure** is provisioned with Terraform (`infra/ec2/main.tf`):
-   - Spins up an EC2 instance with a security group allowing HTTP (80) and SSH (22).
-   - Installs Nginx and clones this repo into the web root via `user_data`.
-
-2. **CI/CD** is handled by GitHub Actions (`.github/workflows/deploy.yml`):
-   - On every push to `main`, the workflow SSHs into the EC2 instance and runs `git pull` to deploy the latest code.
-
-3. **The site** is a static HTML portfolio served by Nginx.
-
----
-
-## 🏗 Setup
+## 🚀 Running Locally
 
 ### Prerequisites
+- Node.js `>= 20.19` (or `>= 22.12`)
+- npm
 
-- AWS CLI configured with appropriate credentials
-- Terraform installed (`>= 1.0`)
-- An SSH key pair for EC2 access
-
-### Deploy Infrastructure
+### Steps
 
 ```bash
-cd infra/ec2
-terraform init
-terraform apply
+# 1. Clone the repo
+git clone https://github.com/Sunil2409/sunil-kumar-portfolio.git
+cd sunil-kumar-portfolio
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the dev server
+npm run dev
 ```
 
-### Configure GitHub Secrets
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-Add the following secrets to your GitHub repository for CI/CD:
+### Other commands
 
-| Secret             | Description                    |
-|--------------------|--------------------------------|
-| `HOST`             | EC2 instance public IP         |
-| `USERNAME`         | SSH username (e.g., `ec2-user`)|
-| `SSH_PRIVATE_KEY`  | Private key for EC2 access     |
+| Command           | Description                        |
+|-------------------|------------------------------------|
+| `npm run dev`     | Start local development server     |
+| `npm run build`   | Build production bundle to `dist/` |
+| `npm run preview` | Preview the production build       |
+
+---
+
+## 🔄 CI/CD — GitHub Pages Deployment
+
+Every push to `main` automatically:
+1. Checks out the code on a GitHub Actions runner
+2. Installs Node.js and dependencies
+3. Runs `npm run build` to produce the `dist/` folder
+4. Deploys `dist/` to the `gh-pages` branch using [`peaceiris/actions-gh-pages`](https://github.com/peaceiris/actions-gh-pages)
+
+No secrets or manual configuration required — only the built-in `GITHUB_TOKEN` is used.
 
 ---
 

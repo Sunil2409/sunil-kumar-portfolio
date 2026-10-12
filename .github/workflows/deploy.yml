@@ -1,49 +1,37 @@
-name: Build and Deploy Vite Portfolio
+name: Deploy Portfolio to GitHub Pages
 
 on:
   push:
     branches:
-      - main 
+      - main
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
 
     steps:
-      # 1. Download your code onto the GitHub runner
+      # 1. Checkout the repository
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Install Node.js on the GitHub runner
+      # 2. Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 3. Install packages and compile the Vite app
+      # 3. Install dependencies and build the Vite app
       - name: Install and Build
         run: |
           npm install
           npm run build
 
-      # 4. Securely copy the compiled 'dist' folder to your EC2 server
-      - name: Copy files to EC2
-        uses: appleboy/scp-action@master
+      # 4. Deploy the built 'dist' folder to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "dist"
-          target: "/home/ec2-user/"
-
-      # 5. Move the compiled files into the Nginx web folder
-      - name: Move to Nginx and Clean Up
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            sudo rm -rf /usr/share/nginx/html/*
-            sudo cp -r /home/ec2-user/dist/* /usr/share/nginx/html/
-            rm -rf /home/ec2-user/dist
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

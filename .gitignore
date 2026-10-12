@@ -46,3 +46,5 @@ npm-debug.log*
 # ── Legacy directories (local Terraform workspaces) ──
 portfolio-ec2/
 terraform/
+infra/
+portfolio/
